@@ -4,7 +4,6 @@ export type Dependency = {
 };
 
 export type DependencySnapshot = {
-    sourceId: string;
     dependencies: Record<string, string>;
 };
 

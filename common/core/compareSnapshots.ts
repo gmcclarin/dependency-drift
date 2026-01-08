@@ -9,9 +9,8 @@ export default function compareSnapshots(
     const bDeps = b.dependencies;
 
     const allKeys = new Set([...Object.keys(aDeps), ...Object.keys(bDeps)]);
-    console.log(allKeys);
 
-    const result = ([...allKeys]).reduce<DependencyDiff>((acc, key) => {
+    const result = ([...allKeys].sort()).reduce<DependencyDiff>((acc, key) => {
         // if key is not in a, but IS in b then it was added
         if ( !(key in aDeps) ) {
             acc.added.push({
@@ -29,7 +28,7 @@ export default function compareSnapshots(
         }
 
         // not the same between a and b
-        else if (aDeps[key] != bDeps[key]) {
+        else if (aDeps[key] !== bDeps[key]) {
             acc.changed.push({
                 name: key,
                 from: aDeps[key],

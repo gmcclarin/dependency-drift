@@ -3,19 +3,47 @@ import { Dependency, DependencyDiff, DependencySnapshot } from "./types";
 export default function compareSnapshots(
     a: DependencySnapshot,
     b: DependencySnapshot
-): DependencyDiff {
-    let result ={} as DependencyDiff;
+) {
 
-    const aDeps = Object.keys(a.dependencies);
-    const bDeps = Object.keys(b.dependencies);
+    const aDeps = a.dependencies;
+    const bDeps = b.dependencies;
 
+    const allKeys = new Set([...Object.keys(aDeps), ...Object.keys(bDeps)]);
+    console.log(allKeys);
 
-    //loop through on dep list and then the other ?
+    const result = ([...allKeys]).reduce<DependencyDiff>((acc, key) => {
+        // if key is not in a, but IS in b then it was added
+        if ( !(key in aDeps) ) {
+            acc.added.push({
+                name: key,
+                version: bDeps[key]
+            });
+        }
+
+        // if key is not in b, then it was removed
+        else if ( !(key in bDeps) ) {
+            acc.removed.push({
+                name: key,
+                version: aDeps[key]
+            });
+        }
+
+        // not the same between a and b
+        else if (aDeps[key] != bDeps[key]) {
+            acc.changed.push({
+                name: key,
+                from: aDeps[key],
+                to: bDeps[key]
+            })
+        }
+        return acc;
+    }, {
+        added: [],
+        removed: [],
+        changed: []
+    })
   
     return result;
 }
 
-// added -> exists in b, not in a
-// removed -> exists in a, not in b
-// changed -> exists in both a and b, version is different
 

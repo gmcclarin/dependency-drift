@@ -16,3 +16,7 @@ export type DependencyDiff = {
         to: string;
     }[];
 };
+
+export type Error = {
+    
+}

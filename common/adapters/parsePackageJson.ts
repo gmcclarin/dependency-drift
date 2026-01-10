@@ -1,1 +1,0 @@
-// RawInput → DependencySnapshot

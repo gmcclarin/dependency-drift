@@ -1,20 +1,19 @@
 import { DependencySource } from "../../core/ports/DependencySource";
 import { DependencySnapshot } from "../../core/types";
 import fs from "fs/promises";
-import path from "path";
 
 /**
- * This file:
- * reads packagejson files
- * parses JSON
- * merges dev + 
+ * Adapter is responsible for 
+ * reading packagejson from disk
+ * parse JSON
+ * merges devDependencies + dependencies
  */
 
-/** IT DOES NOT:
- * No diffing
- * No logging
- * No formatting
- * No CLI stuff
+/** Out of scope:
+ * diffing
+ * logging
+ * formatting
+ * CLI concerns
  */
 
 

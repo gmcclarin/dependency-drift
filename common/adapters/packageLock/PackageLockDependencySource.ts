@@ -1,0 +1,51 @@
+import { DependencySource } from "../../core/ports/DependencySource";
+import { DependencySnapshot } from "../../core/types";
+import fs from "fs/promises";
+
+/**
+ * Adapter is responsible for
+ * reading packagejson.lock from disk
+ * parse lock file
+ * extract resolved dependency versions from the lockfile
+ */
+
+/** Version 1 limitations:
+ * Cannot handle scoped packages i.e. node_modules/@types/node
+ *
+ */
+
+type PackageLock = {
+  packages?: Record<
+    string,
+    {
+      version?: string;
+    }
+  >;
+};
+
+export class PackageLockDependencySource implements DependencySource {
+  constructor(private filePath: string) {}
+
+  async getSnapshot(): Promise<DependencySnapshot> {
+    const raw = await fs.readFile(this.filePath, "utf-8");
+    const pkg: PackageLock = JSON.parse(raw);
+    const dependencies: Record<string, string> = {};
+
+    for (const [pkgPath, pkgInfo] of Object.entries(pkg.packages ?? {})) {
+      // skip root metadata entry
+      if (pkgPath === "") continue;
+
+      if (!pkgInfo.version) continue;
+      
+      // "node_modules/react" → "react"
+      const name = pkgPath.split("/").pop();
+      if (!name) continue;
+
+      dependencies[name] = pkgInfo.version;
+    }
+
+    return {
+      dependencies,
+    };
+  }
+}

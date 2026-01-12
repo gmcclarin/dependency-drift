@@ -16,7 +16,6 @@ import * as fs from "fs/promises";
  * CLI concerns
  */
 
-
 type PackageJson = {
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;

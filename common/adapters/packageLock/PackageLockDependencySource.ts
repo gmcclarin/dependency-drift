@@ -1,6 +1,6 @@
 import { DependencySource } from "../../core/ports/DependencySource";
 import { DependencySnapshot } from "../../core/types";
-import fs from "fs/promises";
+import * as fs from "fs/promises";
 
 /**
  * Adapter is responsible for
@@ -36,7 +36,7 @@ export class PackageLockDependencySource implements DependencySource {
       if (pkgPath === "") continue;
 
       if (!pkgInfo.version) continue;
-      
+
       // "node_modules/react" → "react"
       const name = pkgPath.split("/").pop();
       if (!name) continue;

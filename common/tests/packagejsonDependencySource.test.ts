@@ -1,6 +1,5 @@
 import * as fs from "fs/promises";
 import * as path from "path";
-
 import { PackageJsonDependencySource } from "../adapters/packageJson/PackageJsonDependencySource";
 
 describe("PackageJsonDependencySource", () => {

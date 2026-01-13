@@ -1,5 +1,8 @@
 import { DependencySnapshot } from "../types";
 
+/**
+ * @throws DependencySourceError
+ */
 export interface DependencySource {
   /**
    * Returns a snapshot of dependencies from a source.

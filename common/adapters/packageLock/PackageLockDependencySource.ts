@@ -1,3 +1,7 @@
+import {
+  SnapshotParseError,
+  SnapshotReadError,
+} from "../../core/errors/DependencySourceError";
 import { DependencySource } from "../../core/ports/DependencySource";
 import { DependencySnapshot } from "../../core/types";
 import * as fs from "fs/promises";
@@ -27,10 +31,25 @@ export class PackageLockDependencySource implements DependencySource {
   constructor(private filePath: string) {}
 
   async getSnapshot(): Promise<DependencySnapshot> {
-    const raw = await fs.readFile(this.filePath, "utf-8");
-    const pkg: PackageLock = JSON.parse(raw);
-    const dependencies: Record<string, string> = {};
+    let raw: string;
+    try {
+      raw = await fs.readFile(this.filePath, "utf-8");
+    } catch (error) {
+      throw new SnapshotReadError(
+        `Failed to read package.json at ${this.filePath}`
+      );
+    }
 
+    let pkg: PackageLock;
+    try {
+      pkg = JSON.parse(raw);
+    } catch (error) {
+      throw new SnapshotParseError(
+        `Invalid JSON in package.json at ${this.filePath}`
+      );
+    }
+
+    const dependencies: Record<string, string> = {};
     for (const [pkgPath, pkgInfo] of Object.entries(pkg.packages ?? {})) {
       // skip root metadata entry
       if (pkgPath === "") continue;

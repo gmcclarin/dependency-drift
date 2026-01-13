@@ -9,8 +9,6 @@ The goal is to surface:
 - Lockfile drift across environments
 - Configuration inconsistencies that can lead to production risk
 
----
-
 ## What is Dependency Drift?
 
 Dependency drift occurs when:
@@ -20,7 +18,6 @@ Dependency drift occurs when:
 
 This tool helps teams **see drift early**, before it becomes a runtime issue.
 
----
 
 ## Architecture
 
@@ -43,7 +40,6 @@ This project follows **Hexagonal Architecture (Ports & Adapters)** to ensure:
 - **Ports**  
   Interfaces that define how external systems provide dependency snapshots
 
----
 
 ## Tech Stack
 
@@ -61,7 +57,41 @@ This project follows **Hexagonal Architecture (Ports & Adapters)** to ensure:
   - GitHub OAuth
   - Background job workers
 
----
-
 ## Monorepo Structure (WIP)
+
+/core → domain logic (diffing, models, ports)
+/adapters → filesystem, GitHub, database adapters
+/api → HTTP API
+/worker → background jobs
+/web → React frontend
+
+## Project Status
+
+🚧 **Work in progress**
+
+Current focus:
+- Dependency snapshot adapters
+- Core diffing logic
+- Adapter-level unit tests
+
+Planned:
+- GitHub repository scanning
+- Drift history tracking
+- Web UI for visualization
+- Alerts & reporting
+
+
+## Why This Project Exists
+
+Most dependency tools focus on **updates**.
+This project focuses on **mismatch and drift**, which often causes:
+
+- “Works on my machine” bugs
+- CI vs production discrepancies
+- Unexpected breaking changes
+
+This tool is designed to be:
+- Transparent
+- Testable
+- Architecture-first
 

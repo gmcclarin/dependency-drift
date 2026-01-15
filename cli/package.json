@@ -1,0 +1,13 @@
+{
+  "name": "dep-drift",
+  "version": "0.1.0",
+  "bin": {
+    "dep-drift": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@dep-drift/common": "file:../common"
+  }
+}

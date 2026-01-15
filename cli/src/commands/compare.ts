@@ -1,7 +1,7 @@
-import { PackageJsonDependencySource } from "../../../common/adapters/packageJson/PackageJsonDependencySource";
-import { PackageLockDependencySource } from "../../../common/adapters/packageLock/PackageLockDependencySource";
-import { DependencyDiff } from "../../../common/core/types";
-import { CompareDependencySourcesService } from "../../../common/core/usecases/CompareDependencySources";
+import { PackageJsonDependencySource } from "@dep-drift/common";
+import { PackageLockDependencySource } from "@dep-drift/common";
+import { CompareDependencySourcesService } from "@dep-drift/common";
+import { DependencyDiff } from "@dep-drift/common";
 
 export async function runCompareCommand(args: string[]) {
   const [pathA, pathB] = args;

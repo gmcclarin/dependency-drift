@@ -1,5 +1,4 @@
 import { DependencySnapshot } from "../types";
-
 /**
  * @throws DependencySourceError
  */

@@ -17,6 +17,14 @@ export type DependencyDiff = {
     }[];
 };
 
-export type Error = {
-    
-}
+export type OutdatedDependency = {
+  name: string;
+  currentVersion: string;
+  latestVersion: string;
+  wantedRange: string;
+};
+
+export type OutdatedDependencyReport = {
+  outdated: OutdatedDependency[];
+};
+

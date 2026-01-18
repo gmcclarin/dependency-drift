@@ -1,3 +1,7 @@
+import { DependencyReader } from "./DependencyReader";
+import { VersionRegistry } from "./VersionRegistry";
+
 export interface DependencyRegistry {
-  getLatestVersion(packageName: string): Promise<string>;
+  dependencyReader: DependencyReader;
+  versionRegistry: VersionRegistry;
 }

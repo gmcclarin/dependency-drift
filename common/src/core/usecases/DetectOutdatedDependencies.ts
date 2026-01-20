@@ -1,16 +1,17 @@
 import * as semver from "semver";
-import { DependencyRegistry } from "../ports/DependencyRegistry";
+import { DependencyReader } from "../ports/DependencyReader";
+import { VersionRegistry } from "../ports/VersionRegistry";
 
 export class DetectOutdatedDependenciesService  {
-    constructor(private registry: DependencyRegistry){}
+    constructor(private reader: DependencyReader, private versionRegistry: VersionRegistry){}
 
     async execute() {
-        const deps = await this.registry.dependencyReader.getDependencies();
+        const deps = await this.reader.getDependencies();
 
         const results = [];
 
         for ( const [name, currentVersion] of Object.entries(deps)) {
-            const latest = await this.registry.versionRegistry.getLatestVersion(name);
+            const latest = await this.versionRegistry.getLatestVersion(name);
         
 
             if ( semver.lt(semver.coerce(currentVersion)!, latest)) {

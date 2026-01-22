@@ -6,17 +6,21 @@ import {
   SnapshotParseError,
 } from "@dep-drift/common";
 import { runCompareCommand } from "./commands/compare";
+import { runCheckCommand } from "./commands/check";
 
 const [, , command, ...args] = process.argv;
 // dep-drift compare package.json package-lock.json
 
 async function main() {
   try {
-    if (command === "compare") {
-      await runCompareCommand(args);
-    } else {
-      console.log("Unknown command");
-      process.exit(1);
+    switch (command) {
+      case "compare":
+        await runCompareCommand(args);
+      case "check":
+        await runCheckCommand(args);
+      default:
+        console.log("Unknown command");
+        process.exit(1);
     }
   } catch (error) {
     handleError(error);

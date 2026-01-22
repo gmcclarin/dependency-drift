@@ -16,8 +16,10 @@ async function main() {
     switch (command) {
       case "compare":
         await runCompareCommand(args);
+        break;
       case "check":
         await runCheckCommand(args);
+        break;
       default:
         console.log("Unknown command");
         process.exit(1);

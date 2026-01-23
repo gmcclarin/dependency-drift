@@ -9,7 +9,7 @@ import { runCompareCommand } from "./commands/compare";
 import { runCheckCommand } from "./commands/check";
 
 const [, , command, ...args] = process.argv;
-// dep-drift compare package.json package-lock.json
+// command dep-drift compare package.json package-lock.json
 
 async function main() {
   try {

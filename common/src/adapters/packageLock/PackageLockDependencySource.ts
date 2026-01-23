@@ -6,18 +6,6 @@ import { DependencySource } from "../../core/ports/DependencySource";
 import { DependencySnapshot } from "../../core/types";
 import * as fs from "fs/promises";
 
-/**
- * Adapter is responsible for
- * reading packagejson.lock from disk
- * parse lock file
- * extract resolved dependency versions from the lockfile
- */
-
-/** Version 1 limitations:
- * Cannot handle scoped packages i.e. node_modules/@types/node
- *
- */
-
 type PackageLock = {
   packages?: Record<
     string,
@@ -36,7 +24,7 @@ export class PackageLockDependencySource implements DependencySource {
       raw = await fs.readFile(this.filePath, "utf-8");
     } catch (error) {
       throw new SnapshotReadError(
-        `Failed to read package.json at ${this.filePath}`
+        `Failed to read package-lock.json at ${this.filePath}`
       );
     }
 

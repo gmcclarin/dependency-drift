@@ -1,9 +1,10 @@
 import * as fs from "fs/promises";
 import * as path from "path";
-import { PackageLockDependencySource } from "../adapters/packageLock/PackageLockDependencySource";
+import { PackageLockDependencySource } from "../src/adapters/packageLock/PackageLockDependencySource";
+
 
 describe("PackageLockDependencySource", () => {
-  const tempDir = path.join(__dirname, "__testdata__");
+  const tempDir = path.join(__dirname, "__locktestdata__");
   const lockFilePath = path.join(tempDir, "package-lock.json");
 
   beforeAll(async () => {

@@ -1,6 +1,6 @@
 import * as fs from "fs/promises";
 import * as path from "path";
-import { PackageJsonDependencySource } from "../adapters/packageJson/PackageJsonDependencySource";
+import { PackageJsonDependencySource } from "../src/adapters/packageJson/PackageJsonDependencySource";
 
 describe("PackageJsonDependencySource", () => {
     const tempDir = path.join(__dirname, "__testdata__");

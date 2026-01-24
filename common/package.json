@@ -5,7 +5,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test":"jest --runInBand"
+    "test":"jest --runInBand --detectOpenHandles"
   },
   "dependencies": {
     "semver": "^7.7.3"

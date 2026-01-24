@@ -6,6 +6,7 @@ const config: Config = {
   testMatch: ["**/*.test.ts"],
   moduleFileExtensions: ["ts", "js"],
   clearMocks: true,
+  verbose: false,
 };
 
 export default config;

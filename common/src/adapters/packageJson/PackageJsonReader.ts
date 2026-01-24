@@ -10,8 +10,8 @@ export class PackageJsonReader implements DependencyReader {
     const parsed = JSON.parse(raw);
 
     return {
-      ...(parsed.dependcies ?? {}),
-      ...(parsed.devDEpendencies ?? {}),
+      ...(parsed.dependencies ?? {}),
+      ...(parsed.devDependencies ?? {}),
     };
   }
 }

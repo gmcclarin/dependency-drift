@@ -230,3 +230,10 @@ CLI
  CI-friendly output
 
  Markdown report output
+
+ ... Only compare direct dependencies
+
+Ignore transitive deps in the lockfile.
+option 1 - only compare direct dependencies
+option 2 - Option 2: Add a --transitive flag
+

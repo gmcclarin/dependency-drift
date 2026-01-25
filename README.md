@@ -95,3 +95,86 @@ This tool is designed to be:
 - Testable
 - Architecture-first
 
+
+## Usage
+
+`dep-drift` compares declared dependencies in `package.json` with resolved dependencies in `package-lock.json` to detect **dependency drift**.
+
+### Installation (local development)
+
+If you are working in this monorepo:
+
+```bash
+cd cli
+npm install
+npm run build
+npm link
+```
+
+This will make the `dep-drift` command available globally on your machine.
+
+---
+
+### Basic Command
+
+Run the command **from the root of a Node.js project** that contains both a `package.json` and a `package-lock.json`:
+
+```bash
+dep-drift compare package.json package-lock.json
+```
+
+Paths are resolved relative to the current working directory.
+
+---
+
+### What This Does
+
+* Reads declared dependencies from `package.json`
+* Reads resolved dependencies from `package-lock.json`
+* Compares the two sets
+* Outputs a **Dependency Drift Report** showing:
+
+  * Dependencies that were added
+  * Dependencies that were removed
+  * Dependencies whose versions differ
+
+> ⚠️ Note: At this stage, the tool compares **all resolved dependencies**, including transitive dependencies from the lockfile. This can result in a large list of "Added" dependencies, which is expected behavior.
+
+---
+
+### Example Output
+
+```text
+Dependency Drift Report
+
+Added:
+  jest-worker@29.7.0
+  semver@7.7.2
+  ...
+
+Removed:
+  (none)
+
+Changed:
+  react: ^18.0.0 → 18.2.0
+```
+
+---
+
+### Current Limitations
+
+* Transitive dependencies are included by default
+* No flags or configuration options yet
+* No automatic project root detection
+
+These will be improved in future iterations.
+
+---
+
+### Exit Codes
+
+* `0` — No dependency drift detected
+* `1` — Dependency drift detected
+
+This makes `dep-drift` suitable for use in CI pipelines.
+

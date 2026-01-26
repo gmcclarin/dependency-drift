@@ -4,14 +4,16 @@ import { CompareDependencySourcesService } from "@dep-drift/common";
 import { DependencyDiff } from "@dep-drift/common";
 
 export async function runCompareCommand(args: string[]) {
-  const [pathA, pathB] = args;
+  const transitive = args.includes("--transitive");
+  const filteredArgs = args.filter(arg => arg !== "--transitive");
+  const [pathA, pathB] = filteredArgs;
 
   if (!pathA || !pathB) {
     throw new Error("Usage: dep-drift compare <sourceA> <sourceB>");
   }
 
-  const sourceA = createSource(pathA);
-  const sourceB = createSource(pathB);
+  const sourceA = createSource(pathA, transitive);
+  const sourceB = createSource(pathB, transitive);
 
   const service = new CompareDependencySourcesService();
   const diff = await service.execute(sourceA, sourceB);
@@ -22,13 +24,13 @@ export async function runCompareCommand(args: string[]) {
 //==================
 // HELPERS
 
-function createSource(path: string) {
+function createSource(path: string, transitive: boolean) {
   if (path.endsWith("package.json")) {
     return new PackageJsonDependencySource(path);
   }
 
   if (path.endsWith("package-lock.json")) {
-    return new PackageLockDependencySource(path);
+    return new PackageLockDependencySource(path, transitive);
   }
 
   throw new Error(`Unsupported dependency source: ${path}`);

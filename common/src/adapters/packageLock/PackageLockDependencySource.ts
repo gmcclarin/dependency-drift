@@ -12,6 +12,7 @@ type PackageLock = {
     {
       version?: string;
       dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>; // only for root ""
     }
   >;
 };
@@ -41,28 +42,30 @@ export class PackageLockDependencySource implements DependencySource {
       );
     }
 
+    const rootPkg = pkg.packages?.[""] ?? {};
+    const directDeps = new Set([
+      ...Object.keys(rootPkg.dependencies ?? {}),
+      ...Object.keys(rootPkg.devDependencies ?? {}), // only root has devDependencies
+    ]);
+
     const dependencies: Record<string, string> = {};
 
     // if transitive true, include all packages except root
-    if (this.includeTransitive) {
-      for (const [pkgPath, pkgInfo] of Object.entries(pkg.packages ?? {})) {
-        // skip root metadata entry
-        if (pkgPath === "") continue;
+    for (const [pkgPath, pkgInfo] of Object.entries(pkg.packages ?? {})) {
+      // skip root metadata entry
+      if (pkgPath === "") continue;
+      if (!pkgInfo.version) continue;
 
-        if (!pkgInfo.version) continue;
+      // "node_modules/react" → "react"
+      const name = pkgPath.split("/").pop();
+      if (!name) continue;
 
-        // "node_modules/react" → "react"
-        const name = pkgPath.split("/").pop();
-        if (!name) continue;
+      const isDirect = directDeps.has(name);
+      const include = this.includeTransitive || isDirect;
 
-        dependencies[name] = pkgInfo.version;
-      }
-    } else {
-      // only include **direct** dependencies
-      const root = pkg.packages?.[""];
-      if (root?.dependencies) {
-        Object.assign(dependencies, root.dependencies);
-      }
+      if (!include) continue;
+
+      dependencies[name] = pkgInfo.version;
     }
 
     return {

@@ -11,12 +11,16 @@ type PackageLock = {
     string,
     {
       version?: string;
+      dependencies?: Record<string, string>;
     }
   >;
 };
 
 export class PackageLockDependencySource implements DependencySource {
-  constructor(private filePath: string) {}
+  constructor(
+    private filePath: string,
+    private includeTransitive = false,
+  ) {}
 
   async getSnapshot(): Promise<DependencySnapshot> {
     let raw: string;
@@ -24,7 +28,7 @@ export class PackageLockDependencySource implements DependencySource {
       raw = await fs.readFile(this.filePath, "utf-8");
     } catch (error) {
       throw new SnapshotReadError(
-        `Failed to read package-lock.json at ${this.filePath}`
+        `Failed to read package-lock.json at ${this.filePath}`,
       );
     }
 
@@ -33,22 +37,32 @@ export class PackageLockDependencySource implements DependencySource {
       pkg = JSON.parse(raw);
     } catch (error) {
       throw new SnapshotParseError(
-        `Invalid JSON in package.json at ${this.filePath}`
+        `Invalid JSON in package.json at ${this.filePath}`,
       );
     }
 
     const dependencies: Record<string, string> = {};
-    for (const [pkgPath, pkgInfo] of Object.entries(pkg.packages ?? {})) {
-      // skip root metadata entry
-      if (pkgPath === "") continue;
 
-      if (!pkgInfo.version) continue;
+    // if transitive true, include all packages except root
+    if (this.includeTransitive) {
+      for (const [pkgPath, pkgInfo] of Object.entries(pkg.packages ?? {})) {
+        // skip root metadata entry
+        if (pkgPath === "") continue;
 
-      // "node_modules/react" → "react"
-      const name = pkgPath.split("/").pop();
-      if (!name) continue;
+        if (!pkgInfo.version) continue;
 
-      dependencies[name] = pkgInfo.version;
+        // "node_modules/react" → "react"
+        const name = pkgPath.split("/").pop();
+        if (!name) continue;
+
+        dependencies[name] = pkgInfo.version;
+      }
+    } else {
+      // only include **direct** dependencies
+      const root = pkg.packages?.[""];
+      if (root?.dependencies) {
+        Object.assign(dependencies, root.dependencies);
+      }
     }
 
     return {

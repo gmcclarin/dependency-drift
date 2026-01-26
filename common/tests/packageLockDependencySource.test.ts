@@ -15,12 +15,18 @@ describe("PackageLockDependencySource", () => {
         "": {
           name: "test-project",
           version: "1.0.0",
+          dependencies: {
+            react: "18.2.0",
+          },
         },
         "node_modules/react": {
           version: "18.2.0",
         },
         "node_modules/lodash": {
           version: "4.17.21",
+        },
+        "node_modules/axios": {
+          version: "1.4.0",
         },
       },
     };
@@ -36,13 +42,23 @@ describe("PackageLockDependencySource", () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 
-  it("extracts resolved dependencies from package-lock.json", async () => {
+  it("returns only direct dependencies by default", async () => {
     const source = new PackageLockDependencySource(lockFilePath);
     const snapshot = await source.getSnapshot();
 
     expect(snapshot.dependencies).toEqual({
       react: "18.2.0",
+    });
+  });
+
+   it("returns all dependencies when includeTransitive is true", async () => {
+    const source = new PackageLockDependencySource(lockFilePath, true);
+    const snapshot = await source.getSnapshot();
+
+    expect(snapshot.dependencies).toEqual({
+      react: "18.2.0",
       lodash: "4.17.21",
+      axios: "1.4.0",
     });
   });
 

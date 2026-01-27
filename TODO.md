@@ -52,7 +52,7 @@ Snapshot parse errors
 
 Format errors
 
-### Outdated Dependency Detection (In Progress)
+### Outdated Dependency Detection
 
  Introduced DependencyRegistry / VersionRegistry port
 
@@ -104,6 +104,18 @@ Executed from project root
 
 ## 🔜 Planned Features
 Monorepo / Workspace Support (Level 2)
+
+ check outdated dependencies / recommend action:
+    🔧 Update available (direct dependency)
+        lodash
+        Current: 4.17.19
+        Latest: 4.17.21
+        Risk: Low (patch) -> what defines risk?
+        Action: npm install lodash@latest
+        Group By / give a summary:
+        ✅ Safe updates (3)
+⚠️ Needs review (2)
+🔗 Transitive updates (5)
 
  Detect npm / yarn / pnpm workspaces
 

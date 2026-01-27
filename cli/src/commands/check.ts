@@ -19,12 +19,13 @@ export async function runCheckCommand(args: string[]) {
     return;
   }
 
-  console.log("⚠️ Outdated dependencies detected:\n");
+  console.log("📦 Dependency Drift Summary:\n");
   console.table(
     results.map((r) => ({
       Package: r.name,
       Current: r.currentVersion,
       Latest: r.latest,
+
     })),
   );
 

@@ -9,5 +9,8 @@
   },
   "dependencies": {
     "@dep-drift/common": "file:../common"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.7.1"
   }
 }

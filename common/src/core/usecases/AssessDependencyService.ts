@@ -2,6 +2,7 @@ import * as semver from "semver";
 import { DependencyReader } from "../ports/DependencyReader";
 import { VersionRegistry } from "../ports/VersionRegistry";
 import { RiskLevel } from "../types/risk";
+import { OutdatedDependencyWithRisk } from "../types/dependencies";
 
 export class AssessDependencyService {
   constructor(
@@ -9,7 +10,7 @@ export class AssessDependencyService {
     private versionRegistry: VersionRegistry,
   ) {}
 
-  async execute() {
+  async execute(): Promise<OutdatedDependencyWithRisk[]> {
     const deps = await this.reader.getDependencies();
 
     const results = [];

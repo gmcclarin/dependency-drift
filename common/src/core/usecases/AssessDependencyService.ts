@@ -2,7 +2,6 @@ import * as semver from "semver";
 import { DependencyReader } from "../ports/DependencyReader";
 import { VersionRegistry } from "../ports/VersionRegistry";
 import { RiskLevel } from "../types/risk";
-import { OutdatedDependencyWithRisk } from "../types/dependencies";
 
 export class AssessDependencyService {
   constructor(
@@ -70,23 +69,4 @@ function determineRisk(r: { currentVersion: string; latest: string }): {
   }
 
   return { level: "low", reason: "Patch update" };
-}
-
-function printRiskSection(title: string, emoji: string, items: OutdatedDependencyWithRisk[]) {
-  if (items.length === 0) return;
-
-  console.log(`${emoji} ${title}`);
-  console.log("─".repeat(title.length + 3));
-
-  for (const r of items) {
-    console.log(`
-     🔧 Update available (${r.risk.level.toUpperCase()} RISK)
-     
-      ${r.name}
-      Current: ${r.currentVersion}
-      Latest: ${r.latest}
-      Risk: ${r.risk.level} - ${r.risk.reason}
-      Action: Review before updating
-     `);
-  }
 }

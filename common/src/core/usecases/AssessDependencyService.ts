@@ -2,7 +2,10 @@ import * as semver from "semver";
 import { DependencyReader } from "../ports/DependencyReader";
 import { VersionRegistry } from "../ports/VersionRegistry";
 import { RiskLevel } from "../types/risk";
-import { OutdatedDependencyWithRisk } from "../types/dependencies";
+import {
+  OutdatedDependency,
+  OutdatedDependencyWithRisk,
+} from "../types/dependencies";
 
 export class AssessDependencyService {
   constructor(
@@ -13,27 +16,35 @@ export class AssessDependencyService {
   async execute(): Promise<OutdatedDependencyWithRisk[]> {
     const deps = await this.reader.getDependencies();
 
-    const results = [];
+    const entries = Object.entries(deps);
+    const results = (
+      await Promise.all(
+        entries.map(async ([name, currentVersion]) => {
+          const latest = await this.versionRegistry.getLatestVersion(name);
 
-    for (const [name, currentVersion] of Object.entries(deps)) {
-      const latest = await this.versionRegistry.getLatestVersion(name);
+          const coerced = semver.coerce(currentVersion);
+          if (!coerced) return undefined;
 
-      if (semver.lt(semver.coerce(currentVersion)!, latest)) {
-        results.push({
-          name,
-          currentVersion,
-          latest,
-        });
-      }
-    }
+          if (semver.lt(coerced, latest)) {
+            return {
+              name,
+              currentVersion,
+              latest,
+            } satisfies OutdatedDependency;
+          }
+
+          return undefined;
+        }),
+      )
+    ).filter((r): r is OutdatedDependency => r !== undefined);
 
     const resultsWithRisk = results.map((r) => {
-        const risk = determineRisk(r);
-        return {
-            ...r,
-            risk
-        }
-    })
+      const risk = determineRisk(r);
+      return {
+        ...r,
+        risk,
+      };
+    });
 
     return resultsWithRisk;
   }

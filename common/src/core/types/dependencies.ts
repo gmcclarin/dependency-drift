@@ -22,8 +22,7 @@ export type DependencyDiff = {
 export type OutdatedDependency = {
   name: string;
   currentVersion: string;
-  latestVersion: string;
-  wantedRange: string;
+  latest: string;
 };
 
 export type OutdatedDependencyReport = {

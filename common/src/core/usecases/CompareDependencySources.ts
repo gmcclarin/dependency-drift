@@ -1,5 +1,5 @@
 import { DependencySource } from "../ports/DependencySource";
-import { DependencyDiff } from "../types";
+import { DependencyDiff } from "../types/dependencies";
 import compareSnapshots from "../compareSnapshots";
 
 

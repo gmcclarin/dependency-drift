@@ -1,3 +1,5 @@
+import { RiskLevel } from "./risk";
+
 export type Dependency = {
     name: string;
     version: string;
@@ -26,5 +28,15 @@ export type OutdatedDependency = {
 
 export type OutdatedDependencyReport = {
   outdated: OutdatedDependency[];
+};
+
+export type OutdatedDependencyWithRisk = {
+    risk: {
+        level: RiskLevel;
+        reason: string;
+    };
+    name: string;
+    currentVersion: string;
+    latest: string;
 };
 

@@ -1,4 +1,4 @@
-import { DependencyDiff, DependencySnapshot } from "./types";
+import { DependencyDiff, DependencySnapshot } from "./types/dependencies";
 
 export default function compareSnapshots(
     a: DependencySnapshot,

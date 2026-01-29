@@ -1,4 +1,4 @@
-import { DependencySnapshot } from "../types";
+import { DependencySnapshot } from "../types/dependencies";
 /**
  * @throws DependencySourceError
  */

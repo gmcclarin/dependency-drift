@@ -3,7 +3,7 @@ import {
   SnapshotReadError,
 } from "../../core/errors/DependencySourceError";
 import { DependencySource } from "../../core/ports/DependencySource";
-import {DependencySnapshot } from "../../core/types"
+import {DependencySnapshot } from "../../core/types/dependencies"
 import * as fs from "fs/promises";
 
 type PackageJson = {

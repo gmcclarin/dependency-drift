@@ -1,18 +1,5 @@
-import { NpmRegistryAdapter, PackageJsonReader } from "@dep-drift/common";
-import { DetectOutdatedDependenciesService } from "@dep-drift/common";
-import semver from "semver";
-
-type RiskLevel = "high" | "medium" | "low";
-const RISK_ORDER: RiskLevel[] = ["high", "medium", "low"];
-type Enriched = {
-    risk: {
-        level: RiskLevel;
-        reason: string;
-    };
-    name: string;
-    currentVersion: string;
-    latest: string;
-};
+import { NpmRegistryAdapter, OutdatedDependencyWithRisk, PackageJsonReader } from "@dep-drift/common";
+import { AssessDependencyService } from "@dep-drift/common";
 
 export async function runCheckCommand(args: string[]) {
   const [packageJsonPath = "package.json"] = args;
@@ -20,20 +7,12 @@ export async function runCheckCommand(args: string[]) {
   const dependencyReader = new PackageJsonReader(packageJsonPath);
   const depRegistry = new NpmRegistryAdapter();
 
-  const service = new DetectOutdatedDependenciesService(
+  const service = new AssessDependencyService(
     dependencyReader,
     depRegistry,
   );
 
   const results = await service.execute();
-  const enriched = results.map((r) => {
-    const risk = determineRisk(r);
-
-    return {
-      ...r,
-      risk
-    }
-  })
 
   if (results.length === 0) {
     console.log("✨ All dependencies are up to date");
@@ -42,17 +21,15 @@ export async function runCheckCommand(args: string[]) {
 
   console.log("📦 Dependency Drift Summary:\n");
 
-  const totalChecked = results.length;
-  const updatesAvailable = enriched.length;
+  const updatesAvailable = results.length;
 
   const byRisk = {
-  high: enriched.filter(r => r.risk.level === "high"),
-  medium: enriched.filter(r => r.risk.level === "medium"),
-  low: enriched.filter(r => r.risk.level === "low"),
+  high: results.filter(r => r.risk.level === "high"),
+  medium: results.filter(r => r.risk.level === "medium"),
+  low: results.filter(r => r.risk.level === "low"),
 };
 
 
-console.log(`• ${totalChecked} dependencies checked`);
 console.log(`• ${updatesAvailable} updates available`);
 
 if ( updatesAvailable > 0) {
@@ -71,45 +48,10 @@ if ( updatesAvailable > 0) {
   process.exitCode = 1;
 }
 
-function determineRisk(r: {
-  currentVersion:string;
-  latest: string
-}):  { level: RiskLevel; reason: string } {
-
-  const current = semver.coerce(r.currentVersion);
-  const latest = semver.coerce(r.latest);
-
-  if (!current || !latest) {
-    return { level: "medium", reason: "Unable to determine version risk" };
-  }
-
-  if (semver.prerelease(r.latest) ){
-    return { level: "high", reason: "Pre-release version"};
-  }
-
-  // 0.x versions
-  if (current.major === 0 || latest.major === 0) {
-    return { level: "medium", reason: "0.x version (API not stable)" };
-  }
-
-    const diff = semver.diff(current, latest);
-
-    if (diff === "major") {
-      return { level: "high", reason: "Major version update"};
-    }
-
-    if (diff === "minor") {
-    return { level: "medium", reason: "Minor version update" };
-  }
-
-  return { level: "low", reason: "Patch update" };
-
-}
-
 function printRiskSection(
   title: string,
   emoji: string,
-  items: Enriched[]
+  items: OutdatedDependencyWithRisk[]
 ) {
   if (items.length === 0) return;
 

@@ -4,7 +4,15 @@ import semver from "semver";
 
 type RiskLevel = "high" | "medium" | "low";
 const RISK_ORDER: RiskLevel[] = ["high", "medium", "low"];
-
+type Enriched = {
+    risk: {
+        level: RiskLevel;
+        reason: string;
+    };
+    name: string;
+    currentVersion: string;
+    latest: string;
+};
 
 export async function runCheckCommand(args: string[]) {
   const [packageJsonPath = "package.json"] = args;
@@ -53,28 +61,11 @@ if ( updatesAvailable > 0) {
   console.log(` - ${byRisk.low.length} low risk`  )
 
 }
+  console.log("\nUpdates available — review recommended\n");
 
-  /**
-   * ROUGH SHAPE:
-   * 📦 Dependency Drift Summary:
-• 12 dependencies checked
-• 5 updates available
-  - 3 low risk (patch)
-  - 1 medium risk (minor)
-  - 1 high risk (major)
-
-  then group by risk
-
-   */
-
-  console.table(
-    results.map((r) => ({
-      Package: r.name,
-      Current: r.currentVersion,
-      Latest: r.latest,
-
-    })),
-  );
+  printRiskSection("High Risk Updates", "🚨", byRisk.high);
+  printRiskSection("Medium Risk Updates", "⚠️", byRisk.medium);
+  printRiskSection("Low Risk Updates", "🟢", byRisk.low);  
 
   // future-friendly exit code
   process.exitCode = 1;
@@ -113,4 +104,27 @@ function determineRisk(r: {
 
   return { level: "low", reason: "Patch update" };
 
+}
+
+function printRiskSection(
+  title: string,
+  emoji: string,
+  items: Enriched[]
+) {
+  if (items.length === 0) return;
+
+  console.log(`${emoji} ${title}`)
+  console.log("─".repeat(title.length + 3));
+
+  for ( const r of items) {
+    console.log(`
+     🔧 Update available (${r.risk.level.toUpperCase()} RISK)
+     
+      ${r.name}
+      Current: ${r.currentVersion}
+      Latest: ${r.latest}
+      Risk: ${r.risk.level} - ${r.risk.reason}
+      Action: Review before updating
+     `);
+  }
 }

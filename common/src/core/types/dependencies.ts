@@ -32,10 +32,14 @@ export type OutdatedDependencyReport = {
 export type OutdatedDependencyWithRisk = {
     risk: {
         level: RiskLevel;
-        reason: string;
+        reasons: string[];
     };
     name: string;
     currentVersion: string;
     latest: string;
 };
+
+
+
+
 

@@ -1,7 +1,12 @@
 import * as semver from "semver";
 import { DependencyReader } from "../ports/DependencyReader";
 import { VersionRegistry } from "../ports/VersionRegistry";
-import { RiskLevel } from "../types/risk";
+import {
+  REASON_RULES,
+  RISK_BY_REASON,
+  RISK_REASON,
+  RiskLevel,
+} from "../types/risk";
 import {
   OutdatedDependency,
   OutdatedDependencyWithRisk,
@@ -38,14 +43,24 @@ export class AssessDependencyService {
   }
 }
 
-function collectReasons(r: OutdatedDependency): string[] {
-
-    
-
+function collectReasons(
+  current: semver.SemVer,
+  latest: semver.SemVer,
+): RISK_REASON[] {
+  return REASON_RULES.filter((rule) => rule.when({ current, latest })).map(
+    (r) => r.reason,
+  );
 }
 
-function maxBySeverity() {
+function maxBySeverity(reasons: RISK_REASON[]): RiskLevel {
+  let highestRisk = RiskLevel.LOW;
 
+  reasons.map((r: RISK_REASON) => {
+    const riskItemLevel = RISK_BY_REASON[r].level;
+    if (riskItemLevel > highestRisk) highestRisk = riskItemLevel;
+  });
+
+  return highestRisk;
 }
 
 function determineRisk(r: OutdatedDependency): {
@@ -55,7 +70,18 @@ function determineRisk(r: OutdatedDependency): {
   const current = semver.coerce(r.currentVersion);
   const latest = semver.coerce(r.latest);
 
+  if (!current || !latest) {
+    return { level: RiskLevel.HIGH, reasons: []};
+  }
 
+  const reasons = collectReasons(current, latest);
+  const highestLevel = maxBySeverity(reasons);
+
+  return {
+    level: highestLevel,
+    reasons,
+    
+  }
 
 }
 

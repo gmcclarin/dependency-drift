@@ -1,6 +1,10 @@
 import * as semver from "semver";
 
-export type RiskLevel = "low" | "medium" | "high";
+export enum RiskLevel {
+  LOW,
+  MEDIUM,
+  HIGH
+};
 
 export type RiskAssessment = {
   level: RiskLevel;
@@ -22,25 +26,25 @@ export type RISK_REASON =
 
 export const RISK_BY_REASON: Record<RISK_REASON, RiskMetadata> = {
   PATCH_UPDATE: {
-    level: "low",
+    level: RiskLevel.LOW,
     description: "Patch updates usually contain bug fixes only",
   },
   MINOR_UPDATE: {
-    level: "medium",
+    level: RiskLevel.MEDIUM,
     description: "Minor updates may introduce new behavior",
   },
   MAJOR_UPDATE: {
-    level: "high",
+    level: RiskLevel.HIGH,
     description: "Major updates may contain breaking changes",
   },
 
   ZERO_MAJOR_VERSION: {
-    level: "medium",
+    level: RiskLevel.MEDIUM,
     description: "0.x versions do not guarantee API stability",
   },
 
   PRERELEASE_VERSION: {
-    level: "high",
+    level: RiskLevel.HIGH,
     description: "Pre-release versions may be unstable",
   },
 };

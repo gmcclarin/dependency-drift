@@ -33,10 +33,7 @@ export class AssessDependencyService {
     ).filter((r): r is OutdatedDependency => r !== null);
 
     const resultsWithRisk = results.map((r) => {
-      const current = semver.coerce(r.currentVersion)!;
-      const latest = semver.coerce(r.latest)!;
-
-      const risk = assessRisk(current, latest);
+      const risk = assessRisk(r.currentVersion, r.latest);
       return {
         ...r,
         risk,
@@ -62,10 +59,14 @@ function assessDependency(
   return null;
 }
 
-function assessRisk(
-  current: semver.SemVer,
-  latest: semver.SemVer,
-): RiskAssessment {
+function assessRisk(currentRaw: string, latestRaw: string): RiskAssessment {
+  const current = semver.coerce(currentRaw);
+  const latest = semver.parse(latestRaw);
+
+  if (!current || !latest) {
+    return { level: RiskLevel.HIGH, reasons: [] };
+  }
+
   const reasons = REASON_RULES.filter((rule) =>
     rule.when({ current, latest }),
   ).map((r) => r.reason);

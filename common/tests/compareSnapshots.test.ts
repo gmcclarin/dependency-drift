@@ -1,5 +1,5 @@
 import compareSnapshots from "../src/core/compareSnapshots";
-import { DependencySnapshot } from "../src/core/types";
+import { DependencySnapshot } from "../src/core/types/dependencies";
 
 describe("compareSnapshots", () => {
   it("detects added, removed, and changed dependencies", () => {

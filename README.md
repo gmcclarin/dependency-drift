@@ -1,7 +1,7 @@
 # Dependency Drift Detector
 
 A developer tool that detects **dependency drift** between declared dependencies
-(e.g. `package.json`) and resolved dependencies (e.g. `package-lock.json`) across
+(e.g. `package.json`) and resolved dependencies (e.g. `package-lock.json`) and detect outdated dependencies with update risk levels across
 GitHub repositories.
 
 The goal is to surface:

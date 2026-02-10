@@ -4,7 +4,6 @@ import { VersionRegistry } from "../ports/VersionRegistry";
 import {
   REASON_RULES,
   RISK_BY_REASON,
-  RISK_REASON,
   RiskAssessment,
   RiskLevel,
 } from "../types/risk";

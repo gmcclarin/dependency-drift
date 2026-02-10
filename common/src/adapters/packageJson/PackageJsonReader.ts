@@ -1,6 +1,5 @@
 import { DependencyReader } from "../../core/ports/DependencyReader";
 import { promises as fs } from "fs";
-import path from "path";
 
 export class PackageJsonReader implements DependencyReader {
   constructor( private packageJsonPath = "package.json") {}

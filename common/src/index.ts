@@ -7,3 +7,5 @@ export * from "./core/usecases/AssessDependencyService";
 export * from "./core/types/dependencies";
 export * from "./core/types/risk";
 export * from "./core/errors/DependencySourceError";
+export * from "./adapters/github/GitHubRepoFileReader"
+export * from "./adapters/github/GitHubDependencyReader"

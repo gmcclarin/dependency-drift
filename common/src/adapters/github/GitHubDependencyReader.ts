@@ -6,14 +6,18 @@ export class GitHubDependencyReader implements DependencyReader {
 
     async getDependencies(): Promise<Record<string, string>> {
      const raw = await this.repoReader.readFile("package.json");
-     const parsed = JSON.parse(raw);
+     let parsed: any;
+
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      throw new Error("Invalid package.json");
+    }
 
      return {
-        ...(parsed.dependencies ?? {}),
-        ...(parsed.devDependencies ?? {})
-    }
+      ...(parsed.dependencies ?? {}),
+      ...(parsed.devDependencies ?? {}),
+    };
 
     }
 }
-
-// this handles parsing errors, if a package.json is missing

@@ -7,6 +7,7 @@ import {
 } from "@dep-drift/common";
 import { runCompareCommand } from "./commands/compare";
 import { runCheckCommand } from "./commands/check";
+import { runGithubCommand } from "./commands/runGithubCommand";
 
 const [, , command, ...args] = process.argv;
 // command dep-drift compare package.json package-lock.json
@@ -19,6 +20,9 @@ async function main() {
         break;
       case "check":
         await runCheckCommand(args);
+        break;
+      case "github":
+        await runGithubCommand(args);
         break;
       default:
         console.log("Unknown command");

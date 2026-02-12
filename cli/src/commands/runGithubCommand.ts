@@ -1,4 +1,4 @@
-import { AssessDependencyService, GitHubDependencyReader, GitHubRepoFileReader, NpmRegistryAdapter } from "@dep-drift/common";
+import { GitHubDependencyReader, GitHubRepoFileReader, NpmRegistryAdapter } from "@dep-drift/common";
 import { runDependencyAssessment } from "../services/runDependencyAssessment";
 import { printRiskReport } from "../output/printRiskReport";
 

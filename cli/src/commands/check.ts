@@ -1,12 +1,14 @@
-import { NpmRegistryAdapter, PackageJsonReader } from "@dep-drift/common";
+import { NpmRegistryAdapter } from "@dep-drift/common";
 import { runDependencyAssessment } from "../services/runDependencyAssessment";
 import { printRiskReport } from "../output/printRiskReport";
+import { Arguments, DependencyReaderFactory } from "../factories/DependencyReaderFactory";
 
 
-export async function runCheckCommand(args: string[]) {
-  const [packageJsonPath = "package.json"] = args;
+export async function runCheckCommand(args: Arguments) {
 
-  const dependencyReader = new PackageJsonReader(packageJsonPath);
+  const depReaderFactory = new DependencyReaderFactory();
+
+  const dependencyReader = depReaderFactory.create(args);
   const depRegistry = new NpmRegistryAdapter();
 
   const results = await runDependencyAssessment(dependencyReader, depRegistry);

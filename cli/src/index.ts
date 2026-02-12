@@ -7,22 +7,24 @@ import {
 } from "@dep-drift/common";
 import { runCompareCommand } from "./commands/compare";
 import { runCheckCommand } from "./commands/check";
-import { runGithubCommand } from "./commands/runGithubCommand";
+import { parseArguments } from "./utils/parseArguments";
 
-const [, , command, ...args] = process.argv;
+const [, , command, ...rest] = process.argv;
 // command dep-drift compare package.json package-lock.json
+/**
+ * dep-drift check --source local
+ * dep-drift check --source github --owner grace --repo dep-drift
+ */
 
 async function main() {
   try {
     switch (command) {
       case "compare":
-        await runCompareCommand(args);
+        await runCompareCommand(rest);
         break;
       case "check":
+        const args = parseArguments(rest);
         await runCheckCommand(args);
-        break;
-      case "github":
-        await runGithubCommand(args);
         break;
       default:
         console.log("Unknown command");
